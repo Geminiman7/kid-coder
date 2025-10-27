@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- 
+  This div creates the main "welcome card".
+  - bg-white: White background
+  - p-8 sm:p-12: Lots of padding for a spacious feel
+  - rounded-4xl: Extra-large rounded corners for a super friendly look
+  - shadow-xl: A soft shadow to make it "pop"
+  - text-center: Centers all the text
+  - max-w-3xl mx-auto: Limits the width and centers it on the page
+-->
+<div class="bg-white p-8 sm:p-12 rounded-4xl shadow-xl text-center max-w-3xl mx-auto">
+  
+  <!-- 
+    The main heading.
+    - text-4xl sm:text-5xl: Large, responsive text size
+    - font-black: The thickest font weight, just like the logo
+    - text-brand-purple: Uses our custom purple color
+    - mb-4: Margin-bottom for spacing
+  -->
+  <h2 class="text-4xl sm:text-5xl font-black text-brand-purple mb-4">
+    Welcome to Kid Coder Academy!
+  </h2>
+
+  <!-- 
+    The subtitle.
+    - text-xl: Larger, easy-to-read text
+    - text-gray-700: A soft, dark gray
+    - mb-10: A larger margin to create space before the buttons
+  -->
+  <p class="text-xl text-gray-700 mb-10">
+    Learn coding through fun lessons and quizzes 🎮
+  </p>
+
+  <!-- 
+    A container for the buttons.
+    - flex: Enables flexbox layout
+    - flex-col sm:flex-row: Stacks buttons vertically on small screens, side-by-side on larger screens
+    - justify-center: Centers the buttons
+    - gap-4: Adds space *between* the buttons
+  -->
+  <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+    
+    {% if user.is_authenticated %}
+      <!-- 
+        Primary "Go to Dashboard" button.
+        - bg-brand-green: Our custom green color
+        - text-white: White text
+        - font-bold text-lg: Bold, large text
+        - py-3 px-8 rounded-full: Creates the large, pill shape
+        - shadow-lg: Adds a nice shadow
+        - transform hover:-translate-y-1 transition-all: Fun "lift" effect on hover
+      -->
+      <a href="{% url 'dashboard' %}" class="inline-block bg-brand-green text-white font-bold text-lg py-3 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+        Go to Dashboard 🚀
+      </a>
+    
+    {% else %}
+      
+      <!-- 
+        Secondary "Login" button.
+        - bg-brand-blue/10: A light, 10% opaque version of our blue
+        - text-brand-blue: Our custom blue color for the text
+        - hover:bg-brand-blue/20: Gets slightly darker on hover
+      -->
+      <a href="{% url 'login' %}" class="inline-block bg-brand-blue/10 text-brand-blue font-bold text-lg py-3 px-8 rounded-full hover:bg-brand-blue/20 transition-all duration-300">
+        Login
+      </a>
+      
+      <!-- 
+        Primary "Register" button.
+        - Same style as the "Go to Dashboard" button for a consistent primary action
+      -->
+      <a href="{% url 'register' %}" class="inline-block bg-brand-green text-white font-bold text-lg py-3 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+        Register
+      </a>
+    
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

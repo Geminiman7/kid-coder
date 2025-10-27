@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-10">
+    
+    <!-- Quiz Header -->
+    <div class="text-center mb-10">
+        <h2 class="text-4xl font-black text-brand-purple mb-3">
+            🧠 Quiz Time: {{ lesson.title }}
+        </h2>
+        <p class="text-xl text-gray-700">Test your knowledge and earn some XP!</p>
+    </div>
+
+    <!-- Quiz Form Container -->
+    <form method="post" class="space-y-8">
+        {% csrf_token %}
+        
+        {% for q in quizzes %}
+        
+        <!-- Individual Question Card -->
+        <div class="bg-white p-6 sm:p-8 rounded-3xl shadow-lg border-2 border-brand-yellow/50">
+            
+            <!-- Question Text -->
+            <p class="text-xl font-bold text-gray-800 mb-5">
+                <span class="text-2xl text-brand-blue mr-2">{{ forloop.counter }}.</span> 
+                {{ q.question }}
+            </p>
+            
+            <!-- Options Group -->
+            <div class="space-y-3">
+                
+                <!-- Option A -->
+                <label for="q-{{ q.id }}-a" class="flex items-center p-4 bg-gray-50 rounded-xl cursor-pointer transition-all duration-200 hover:bg-brand-yellow/30 has-[:checked]:bg-brand-yellow/60 border border-gray-100 has-[:checked]:border-brand-yellow">
+                    <input type="radio" id="q-{{ q.id }}-a" name="{{ q.id }}" value="A" class="form-radio h-5 w-5 text-brand-green border-gray-300 focus:ring-brand-green">
+                    <span class="ml-4 text-lg font-medium text-gray-700">{{ q.option_a }}</span>
+                </label>
+
+                <!-- Option B -->
+                <label for="q-{{ q.id }}-b" class="flex items-center p-4 bg-gray-50 rounded-xl cursor-pointer transition-all duration-200 hover:bg-brand-yellow/30 has-[:checked]:bg-brand-yellow/60 border border-gray-100 has-[:checked]:border-brand-yellow">
+                    <input type="radio" id="q-{{ q.id }}-b" name="{{ q.id }}" value="B" class="form-radio h-5 w-5 text-brand-green border-gray-300 focus:ring-brand-green">
+                    <span class="ml-4 text-lg font-medium text-gray-700">{{ q.option_b }}</span>
+                </label>
+
+                <!-- Option C -->
+                <label for="q-{{ q.id }}-c" class="flex items-center p-4 bg-gray-50 rounded-xl cursor-pointer transition-all duration-200 hover:bg-brand-yellow/30 has-[:checked]:bg-brand-yellow/60 border border-gray-100 has-[:checked]:border-brand-yellow">
+                    <input type="radio" id="q-{{ q.id }}-c" name="{{ q.id }}" value="C" class="form-radio h-5 w-5 text-brand-green border-gray-300 focus:ring-brand-green">
+                    <span class="ml-4 text-lg font-medium text-gray-700">{{ q.option_c }}</span>
+                </label>
+
+            </div>
+            
+        </div>
+        {% endfor %}
+
+        <!-- Submit Button -->
+        <div class="pt-8 text-center">
+            <button 
+                type="submit" 
+                class="inline-block bg-brand-green text-white font-black text-xl py-4 px-12 rounded-full shadow-2xl transform hover:-translate-y-1 transition-all duration-300 ring-4 ring-brand-green/30"
+            >
+                Submit Answers & Get XP! 🎉
+            </button>
+        </div>
+        
+    </form>
+</div>
+{% endblock %}

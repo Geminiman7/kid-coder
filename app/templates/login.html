@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- 
+  The main container for the Login card.
+  - max-w-md: Sets a fixed, moderate width.
+  - mx-auto: Centers the card on the screen.
+-->
+<div class="max-w-md mx-auto">
+  
+  <!-- The card itself, using the friendly styling -->
+  <div class="bg-white p-8 sm:p-10 rounded-4xl shadow-xl text-center">
+    
+    <!-- Title -->
+    <h2 class="text-3xl font-black text-brand-purple mb-6">
+      🔐 Welcome Back!
+    </h2>
+    
+    <!-- Optional: Display form errors here if needed (Django's default handling is usually fine) -->
+    {% if form.errors %}
+      <p class="text-red-600 bg-red-100 p-3 rounded-xl mb-4 text-sm font-semibold">
+        Oops! Check your username and password and try again.
+      </p>
+    {% endif %}
+
+    <!-- Login Form -->
+    <form method="post">
+      {% csrf_token %}
+      
+      <!-- Username Input -->
+      <input 
+        type="text" 
+        name="username" 
+        placeholder="Awesome Username" 
+        required
+        class="w-full border-2 border-gray-300 p-4 rounded-xl mb-4 text-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/50 transition-all"
+      >
+      
+      <!-- Password Input -->
+      <input 
+        type="password" 
+        name="password" 
+        placeholder="Secret Password" 
+        required
+        class="w-full border-2 border-gray-300 p-4 rounded-xl mb-6 text-lg focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/50 transition-all"
+      >
+      
+      <!-- Submit Button -->
+      <button 
+        type="submit" 
+        class="w-full bg-brand-green text-white font-bold text-xl py-4 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+      >
+        Log In Now! 🚀
+      </button>
+      
+    </form>
+    
+    <!-- Register Link -->
+    <p class="mt-6 text-gray-600">
+      Don’t have an account? 
+      <a href="{% url 'register' %}" class="text-brand-blue font-semibold hover:underline">
+        Register here!
+      </a>
+    </p>
+    
+  </div>
+</div>
+
+{% endblock %}

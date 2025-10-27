@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- 
+  We'll use Tailwind's 'hidden' class for simplicity.
+  The fade-in/out is nice, but 'hidden' is more reliable
+  and simpler to manage.
+-->
+
+<div class="max-w-4xl mx-auto">
+  
+  <!-- 1. Lesson Header -->
+  <div class="text-center mb-10">
+    <h1 class="text-4xl sm:text-5xl font-black text-brand-purple mb-4">
+      {{ lesson.title }}
+    </h1>
+    <p class="text-xl text-gray-700 max-w-2xl mx-auto">
+      {{ lesson.description }}
+    </p>
+  </div>
+
+  {% if slides %}
+ 
+  <!-- 2. Main Lesson Slideshow Card -->
+  <div id="slide-container" class="bg-white rounded-4xl shadow-xl p-6 sm:p-10 relative">
+    
+    {% for slide in slides %}
+      <!-- 
+        A single slide. We'll just toggle Tailwind's 'hidden' class.
+        'prose' classes make the text content look beautiful by default.
+      -->
+      <div class="slide {% if not forloop.first %}hidden{% endif %} prose prose-lg max-w-none">
+        
+        <!-- Slide Title -->
+        <h2 class="text-3xl font-bold text-brand-blue mb-4">
+          {{ slide.title }}
+        </h2>
+        
+        <!-- Slide Content -->
+        <p class="text-gray-700 mb-6 leading-relaxed">
+          {{ slide.text }}
+        </p>
+
+        <!-- Slide Image -->
+        {% if slide.image %}
+          <img src="{{ slide.image.url }}" alt="Slide Image" class="w-full rounded-2xl mb-6 shadow-lg">
+        {% endif %}
+
+        <!-- Slide Code Block -->
+        {% if slide.code %}
+          <!-- A more kid-friendly code block style -->
+          <pre class="bg-blue-50 border-l-4 border-brand-blue p-4 rounded-xl overflow-x-auto mb-6">
+            <code class="text-blue-900 text-base">
+{{ slide.code }}
+            </code>
+          </pre>
+        {% endif %}
+        
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- 3. Slideshow Navigation -->
+  <div class="flex justify-between items-center mt-8">
+    <!-- Previous Button -->
+    <button id="prevBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-3 px-6 rounded-full transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+      ⬅ Previous
+    </button>
+    
+    <!-- Progress Text -->
+    <span id="progressText" class="text-lg font-semibold text-gray-600">
+      Slide 1 of {{ slides|length }}
+    </span>
+    
+    <!-- Next Button -->
+    <button id="nextBtn" class="bg-brand-green text-white font-bold py-3 px-6 rounded-full shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+      Next ➡
+    </button>
+  </div>
+
+  <!-- 4. Slideshow JavaScript with Voice Cover -->
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const slides = document.querySelectorAll(".slide");
+      if (slides.length === 0) return;
+
+      const prevBtn = document.getElementById("prevBtn");
+      const nextBtn = document.getElementById("nextBtn");
+      const progressText = document.getElementById("progressText");
+      const synth = window.speechSynthesis;
+      let current = 0;
+
+      // Speak the current slide's text
+      function speakSlideText(index) {
+        synth.cancel(); // stop ongoing speech
+        const slide = slides[index];
+        if (!slide) return;
+        const textElement = slide.querySelector("p");
+        if (textElement && textElement.textContent.trim() !== "") {
+          const utterance = new SpeechSynthesisUtterance(textElement.textContent);
+          utterance.lang = "en-US"; // Language
+          utterance.rate = 1;       // Speed (0.5–2)
+          utterance.pitch = 1;      // Pitch (0–2)
+          synth.speak(utterance);
+        }
+      }
+
+      // Show slide and trigger voice
+      function showSlide(n) {
+        slides.forEach((slide, i) => {
+          slide.classList.toggle("hidden", i !== n);
+        });
+
+        progressText.textContent = `Slide ${n + 1} of ${slides.length}`;
+        prevBtn.disabled = n === 0;
+        nextBtn.disabled = n === slides.length - 1;
+
+        // Read aloud current slide
+        speakSlideText(n);
+      }
+
+      nextBtn.addEventListener("click", () => {
+        if (current < slides.length - 1) {
+          current++;
+          showSlide(current);
+        }
+      });
+
+      prevBtn.addEventListener("click", () => {
+        if (current > 0) {
+          current--;
+          showSlide(current);
+        }
+      });
+
+      // Add "Read Slide" button beside progress text
+      const readBtn = document.createElement("button");
+      readBtn.textContent = "🔊 Read Slide";
+      readBtn.className =
+        "ml-4 bg-blue-500 text-white font-bold py-2 px-4 rounded-full shadow-md hover:bg-blue-600 transition-all";
+      progressText.insertAdjacentElement("afterend", readBtn);
+      readBtn.addEventListener("click", () => speakSlideText(current));
+
+      // Initialize first slide
+      showSlide(current);
+    });
+  </script>
+
+  {% else %}
+  
+  <!-- "No Slides" Message Card -->
+  <div class="bg-white p-8 rounded-3xl shadow-lg text-center text-gray-700">
+    <p class="text-lg">No slides available for this lesson yet. 🚀</p>
+  </div>
+  
+  {% endif %}
+
+
+  <!-- 5. Interactive Code Editor Card (Skulpt) -->
+  <div class="bg-white rounded-3xl shadow-lg p-6 sm:p-8 mt-12">
+    <h3 class="text-2xl font-bold text-brand-purple mb-4">
+      Try it yourself! 🧑‍💻
+    </h3>
+    
+    <!-- Styled Text Editor -->
+    <textarea id="editor" class="w-full h-48 bg-gray-50 rounded-xl border-2 border-gray-200 p-4 font-mono text-base focus:ring-2 focus:ring-brand-blue focus:border-transparent transition-all"
+    >print("Hello, world!")</textarea>
+
+    <!-- "Run Code" Button -->
+    <button id="runCode" class="bg-brand-blue text-white font-bold py-2 px-6 rounded-full shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300 mt-4">
+      Run Code ▶
+    </button>
+
+    <!-- Output Window -->
+    <h4 class="text-lg font-semibold mt-6 mb-2">Output:</h4>
+    <pre id="output" class="bg-gray-800 text-white p-4 rounded-xl font-mono text-sm overflow-x-auto min-h-[50px]"></pre>
+  </div>
+
+  <!-- Skulpt JS -->
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+  <script>
+    function builtinRead(x) {
+      if (Sk.builtinFiles === undefined || Sk.builtinFiles["files"][x] === undefined)
+        throw "File not found: '" + x + "'";
+      return Sk.builtinFiles["files"][x];
+    }
+
+    document.getElementById("runCode").onclick = function () {
+      const code = document.getElementById("editor").value;
+      const output = document.getElementById("output");
+      output.textContent = ""; // Clear previous output
+      
+      Sk.configure({ 
+        output: text => {
+          output.textContent += text;
+        }, 
+        read: builtinRead 
+      });
+
+      output.classList.remove("text-red-400");
+      Sk.misceval.asyncToPromise(() => Sk.importMainWithBody("<stdin>", false, code, true))
+        .catch(err => {
+          output.classList.add("text-red-400");
+          output.textContent = err.toString();
+        });
+    };
+  </script>
+
+  <!-- 6. Quiz Link -->
+  <div class="text-center mt-12 pt-8 border-t border-gray-200">
+    <a href="{% url 'quiz' lesson.id %}" 
+       class="inline-block bg-brand-yellow text-gray-900 font-black text-xl py-4 px-10 rounded-full shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+      Ready for the Quiz? 🧩
+    </a>
+  </div>
+
+</div>
+{% endblock %}

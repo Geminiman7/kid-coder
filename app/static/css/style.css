@@ -1,0 +1,51 @@
+body {
+  background-color: #f0f9ff;
+  font-family: Comic Sans MS, sans-serif;
+  text-align: center;
+}
+
+header {
+  background-color: #0078D7;
+  padding: 15px;
+  color: white;
+}
+
+nav a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+.btn {
+  display: inline-block;
+  background-color: #FFB703;
+  color: black;
+  padding: 10px 20px;
+  margin: 10px;
+  border-radius: 15px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.center {
+  margin-top: 50px;
+}
+.lesson-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.lesson-card {
+  background: #fff;
+  border: 3px solid #0078D7;
+  border-radius: 20px;
+  padding: 15px;
+  margin: 10px;
+  width: 250px;
+}
+
+.lesson-card.completed {
+  border-color: #00C853;
+  background: #E8F5E9;
+}

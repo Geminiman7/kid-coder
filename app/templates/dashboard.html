@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<!-- 
+  1. Welcome Banner
+  A friendly welcome card at the top.
+-->
+<div class="bg-white p-6 sm:p-8 rounded-3xl shadow-lg mb-12">
+  <h2 class="text-3xl sm:text-4xl font-black text-brand-purple mb-4">
+    Welcome back, {{ user.username }}! 🧠
+  </h2>
+  
+  <!-- 
+    Stats Bar
+    We'll turn the level and XP into colorful "pills".
+  -->
+  <div class="flex flex-col sm:flex-row flex-wrap gap-4">
+    <div class="inline-flex items-center bg-brand-blue/10 text-brand-blue font-bold text-lg px-6 py-2 rounded-full">
+      Level:
+      <span class="ml-2 text-xl">{{ profile.level }}</span>
+    </div>
+    <div class="inline-flex items-center bg-brand-green/10 text-brand-green font-bold text-lg px-6 py-2 rounded-full">
+      XP:
+      <span class="ml-2 text-xl">{{ profile.xp }}</span>
+    </div>
+  </div>
+</div>
+
+<!-- 
+  2. Lessons Section Title
+-->
+<h3 class="text-2xl sm:text-3xl font-black text-gray-800 mb-6">
+  Available Lessons 📚
+</h3>
+
+<!-- 
+  3. Lesson Grid
+  - Uses CSS Grid for a responsive layout.
+  - 1 column on mobile, 2 on tablet, 3 on desktop.
+  - 'gap-8' adds nice spacing between cards.
+-->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+  {% for lesson in lessons %}
+    <!-- 
+      Lesson Card
+      - 'relative' is for the "Completed" badge.
+      - 'flex flex-col' and 'h-full' ensures cards in the same row are the same height,
+        and the button sticks to the bottom.
+    -->
+    <div class="bg-white rounded-3xl shadow-lg overflow-hidden flex flex-col relative h-full">
+      
+      <!-- "Completed" Badge -->
+      {% if lesson.id in completed_ids %}
+        <span class="absolute top-4 right-4 bg-brand-green text-white text-xs font-bold px-3 py-1 rounded-full z-10">
+          COMPLETED ✓
+        </span>
+      {% endif %}
+
+      <!-- 
+        Card Content
+        - 'flex-grow' makes this section fill the available space,
+          pushing the button to the bottom.
+      -->
+      <div class="p-6 flex-grow">
+        <!-- Lesson Level (styled as a tag) -->
+        <p class="inline-block bg-brand-blue/10 text-brand-blue rounded-full px-3 py-1 text-sm font-semibold mb-3">
+          Level: {{ lesson.level }}
+        </p>
+        
+        <!-- Lesson Title -->
+        <h4 class="text-xl font-bold text-brand-purple mb-2">
+          {{ lesson.title }}
+        </h4>
+        
+        <!-- Lesson Description -->
+        <p class="text-gray-700 text-base">
+          {{ lesson.description|truncatewords:15 }}
+        </p>
+      </div>
+
+      <!-- 
+        Card Footer (for the button)
+      -->
+      <div class="p-6 pt-0">
+        {% if lesson.id in completed_ids %}
+          <!-- "Review" Button (if completed) -->
+          <a href="{% url 'lesson_detail' lesson.id %}" class="block w-full text-center bg-brand-blue text-white font-bold py-3 px-6 rounded-full shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300">
+            Review Lesson
+          </a>
+        {% else %}
+          <!-- "Start" Button (if not completed) -->
+          <a href="{% url 'lesson_detail' lesson.id %}" class="block w-full text-center bg-brand-green text-white font-bold py-3 px-6 rounded-full shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition-all duration-300">
+            Start Lesson
+          </a>
+        {% endif %}
+      </div>
+      
+    </div>
+  {% empty %}
+    <!-- 
+      Show this message if there are no lessons.
+    -->
+    <div class="bg-white p-8 rounded-3xl shadow-lg text-center text-gray-700 col-span-full">
+      <p class="text-lg">No lessons available just yet. Check back soon! 🧑‍🚀</p>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

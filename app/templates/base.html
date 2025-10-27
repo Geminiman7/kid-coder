@@ -1,0 +1,118 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kid Coder Academy</title>
+  
+  <!-- 1. Load Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- 2. Load a friendly, rounded Google Font (Nunito) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+  
+  <!-- 3. Configure Tailwind to use the new font and add custom "kid-friendly" colors -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            // Set 'Nunito' as the default sans-serif font
+            sans: ['Nunito', 'sans-serif'],
+          },
+          colors: {
+            // Create a fun, bright color palette
+            'brand-blue': '#3498db',
+            'brand-yellow': '#f1c40f',
+            'brand-green': '#2ecc71',
+            'brand-red': '#e74c3c',
+            'brand-purple': '#9b59b6',
+          },
+          borderRadius: {
+            '2xl': '1rem', // Default '2xl' is 1rem, but we ensure it's here
+            '3xl': '1.5rem',
+            '4xl': '2rem',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<!-- Use flex-col and min-h-screen to make the footer stick to the bottom -->
+<body class="font-sans antialiased text-gray-900 bg-gray-50 min-h-screen flex flex-col">
+
+  <!-- Header Section -->
+  <!-- A colorful gradient background, white text, and a soft shadow -->
+  <header class="bg-gradient-to-r from-brand-blue to-brand-purple text-white shadow-lg w-full">
+    <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center">
+      <!-- Logo/Title -->
+      <a href="/" class="text-3xl font-black tracking-tight hover:opacity-90 transition-opacity">
+        🎓 Kid Coder Academy
+      </a>
+      
+      <!-- Navigation Links -->
+      <!-- Links are styled as "pills" for a fun, clickable feel -->
+      <div class="flex items-center space-x-2 sm:space-x-4 mt-4 sm:mt-0">
+        <a href="/" class="text-base font-bold py-2 px-4 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-300">Home</a>
+        
+        {% if user.is_authenticated %}
+          <a href="{% url 'dashboard' %}" class="text-base font-bold py-2 px-4 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-300">Dashboard</a>
+          <a href="{% url 'logout' %}" class="text-base font-bold py-2 px-4 rounded-full bg-brand-yellow text-gray-900 hover:bg-opacity-90 transition-all duration-300">Logout</a>
+        {% else %}
+          <a href="{% url 'login' %}" class="text-base font-bold py-2 px-4 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition-all duration-300">Login</a>
+          <a href="{% url 'register' %}" class="text-base font-bold py-2 px-4 rounded-full bg-brand-green text-white hover:bg-opacity-90 transition-all duration-300">Register</a>
+        {% endif %}
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content Area -->
+  <!-- 'flex-grow' makes this section fill the available space -->
+  <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+    
+    {% block content %}
+      <!-- 
+        This is default content that will appear if a child template doesn't define a 'content' block.
+        It's styled to look friendly and welcoming.
+      -->
+      <div class="bg-white p-8 sm:p-12 rounded-3xl shadow-xl text-center">
+        <h2 class="text-4xl font-bold text-brand-purple mb-4">Welcome, Young Coder!</h2>
+        <p class="text-lg text-gray-700 mb-8">This is where your learning adventure begins. Choose a lesson from the dashboard to get started!</p>
+        
+        <!-- Example of a fun, colorful button -->
+        <a href="#" class="inline-block bg-brand-yellow text-gray-900 font-bold text-xl py-3 px-8 rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+          Get Started!
+        </a>
+      </div>
+    {% endblock %}
+    
+  </main>
+
+  <!-- Footer Section -->
+  <!-- A simple, dark footer -->
+  <footer class="w-full bg-gray-800 text-gray-300 py-6 text-center">
+    <p>© 2025 Kid Coder Academy - Keep on coding! 🚀</p>
+  </footer>
+<!-- 🎵 Background Music -->
+<audio id="bgMusic" src="{% static 'sounds/background.mp3' %}" loop></audio>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const bgMusic = document.getElementById("bgMusic");
+    bgMusic.volume = 0.2; // smooth soft sound
+  });
+
+  // Wait for user interaction before autoplay (required by browsers)
+  window.addEventListener("click", () => {
+    const bgMusic = document.getElementById("bgMusic");
+    if (bgMusic.paused) {
+      bgMusic.play().catch(err => console.log("Music play blocked:", err));
+    }
+  });
+</script>
+
+</body>
+</html>
